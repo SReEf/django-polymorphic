@@ -214,18 +214,19 @@ def _get_all_sub_models(base_model):
     while queue:
         model = queue.popleft()
         if issubclass(model, models.Model) and model != models.Model:
+            # skip error for magic
             # model name is occurring twice in submodel inheritance tree => Error
-            if model.__name__ in result and model != result[model.__name__]:
-                raise FieldError(
-                    "PolymorphicModel: model name alone is ambiguous: %s.%s and %s.%s match!\n"
-                    "In this case, please use the syntax: applabel__ModelName___field"
-                    % (
-                        model._meta.app_label,
-                        model.__name__,
-                        result[model.__name__]._meta.app_label,
-                        result[model.__name__].__name__,
-                    )
-                )
+            # if model.__name__ in result and model != result[model.__name__]:
+            #     raise FieldError(
+            #         "PolymorphicModel: model name alone is ambiguous: %s.%s and %s.%s match!\n"
+            #         "In this case, please use the syntax: applabel__ModelName___field"
+            #         % (
+            #             model._meta.app_label,
+            #             model.__name__,
+            #             result[model.__name__]._meta.app_label,
+            #             result[model.__name__].__name__,
+            #         )
+            #     )
 
             result[model.__name__] = model
         queue.extend(model.__subclasses__())
